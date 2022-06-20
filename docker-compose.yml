@@ -30,6 +30,7 @@ services:
 
   prometheus:
     image: prom/prometheus
+    user: root
     restart: always
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
@@ -40,6 +41,9 @@ services:
       - traefik.http.services.${COMPOSE_PROJECT_NAME}-prometheus.loadbalancer.server.port=9090
     networks:
       - default
+    #depends_on:
+    #  - cadvisor
+
     volumes:
       - ./data/prometheus:/prometheus
       - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
@@ -90,9 +94,28 @@ services:
       - traefik.http.services.${COMPOSE_PROJECT_NAME}-grafana.loadbalancer.server.port=3000
     ports:
       - ${PORT:-80}:3000
+    user: '472'
     volumes:
     - ./data/grafana:/var/lib/grafana
     - ./config/grafana/provisioning:/etc/grafana/provisioning
     networks:
       - frontend
       - default
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node_exporter
+    restart: unless-stopped
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    ports:
+      - 9100:9100
+    networks:
+      - frontend

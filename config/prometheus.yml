@@ -12,9 +12,13 @@ scrape_configs:
   metrics_path: /probe
   static_configs:
     - targets:
-      - https://google.com
-      - https://viblo.asia
-      - https://viblo.asia/api/web-init-404
+      - https://biz.tpb.vn
+      - https://ebank.tpb.vn
+      - https://vcbdigibiz.vietcombank.com.vn
+      - https://vcbdigibank.vietcombank.com.vn
+      - https://smartbanking.bidv.com.vn
+      - https://www.bidv.vn/iBank/MainEB.html
+      - https://efast.vietinbank.vn
   params:
     module: [http_2xx]
   relabel_configs:
@@ -24,3 +28,8 @@ scrape_configs:
       target_label: instance
     - target_label: __address__
       replacement: "blackbox_exporter:9115"
+- job_name: node
+  scrape_interval: 5s
+  static_configs:
+  - targets: ['10.211.55.4:9100']
+

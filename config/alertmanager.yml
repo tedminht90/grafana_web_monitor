@@ -4,8 +4,27 @@ global:
 
 route:
   receiver: 'slack-notifications'
+  #group_by : ['alertname']
+  #group_wait: 10s
+  #group_interval: 10s
+  #repeat_interval: 10s
+  #receiver: 'email'
 
 receivers:
+#- name: 'email'
+#  email_configs:
+#  - to: 'receiver_mail_id@gmail.com'
+#    from: 'mail_id@gmail.com'
+#    smarthost: stmp.gmail.com:587
+#    auth_usename: 'mail_id@gmail.com'
+#    auth_identity: 'mail_id@gmail.com'
+#    auth_password: 'password'
+#  inhibit_rules:
+#  - source_math:
+#      severity: 'critical'
+#    target_match:
+#      severity: 'warning'
+#    equal: ['alertname', 'dev', 'instance']
   - name: 'slack-notifications'
     slack_configs:
       - channel: 'test'
